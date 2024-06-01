@@ -1,0 +1,235 @@
+-- Fungsi untuk membuat GUI kontrol
+local function createControlGUI()
+    local player = game.Players.LocalPlayer
+    if player.PlayerGui:FindFirstChild("ControlGui") then
+        return
+    end
+
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "ControlGui"
+    ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+    local buttonSize = UDim2.new(0, 100, 0, 50)
+    local buttonColor = Color3.fromRGB(100, 100, 255)
+
+    local forwardButton = Instance.new("TextButton")
+    forwardButton.Size = buttonSize
+    forwardButton.Position = UDim2.new(0.5, -50, 0.8, -110)
+    forwardButton.BackgroundColor3 = buttonColor
+    forwardButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    forwardButton.Text = "Forward"
+    forwardButton.Font = Enum.Font.SourceSansBold
+    forwardButton.TextSize = 14
+    forwardButton.Parent = ScreenGui
+
+    local backwardButton = Instance.new("TextButton")
+    backwardButton.Size = buttonSize
+    backwardButton.Position = UDim2.new(0.5, -50, 0.8, -50)
+    backwardButton.BackgroundColor3 = buttonColor
+    backwardButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    backwardButton.Text = "Backward"
+    backwardButton.Font = Enum.Font.SourceSansBold
+    backwardButton.TextSize = 14
+    backwardButton.Parent = ScreenGui
+
+    local leftButton = Instance.new("TextButton")
+    leftButton.Size = buttonSize
+    leftButton.Position = UDim2.new(0.5, -150, 0.8, -80)
+    leftButton.BackgroundColor3 = buttonColor
+    leftButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    leftButton.Text = "Left"
+    leftButton.Font = Enum.Font.SourceSansBold
+    leftButton.TextSize = 14
+    leftButton.Parent = ScreenGui
+
+    local rightButton = Instance.new("TextButton")
+    rightButton.Size = buttonSize
+    rightButton.Position = UDim2.new(0.5, 50, 0.8, -80)
+    rightButton.BackgroundColor3 = buttonColor
+    rightButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    rightButton.Text = "Right"
+    rightButton.Font = Enum.Font.SourceSansBold
+    rightButton.TextSize = 14
+    rightButton.Parent = ScreenGui
+
+    local speedLabel = Instance.new("TextLabel")
+    speedLabel.Size = UDim2.new(0, 100, 0, 50)
+    speedLabel.Position = UDim2.new(0.5, -50, 0.8, -170)
+    speedLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    speedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    speedLabel.Text = "Speed: 1"
+    speedLabel.Font = Enum.Font.SourceSansBold
+    speedLabel.TextSize = 14
+    speedLabel.Parent = ScreenGui
+
+    local speedUpButton = Instance.new("TextButton")
+    speedUpButton.Size = UDim2.new(0, 50, 0, 50)
+    speedUpButton.Position = UDim2.new(0.5, 60, 0.8, -170)
+    speedUpButton.BackgroundColor3 = buttonColor
+    speedUpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    speedUpButton.Text = "+"
+    speedUpButton.Font = Enum.Font.SourceSansBold
+    speedUpButton.TextSize = 14
+    speedUpButton.Parent = ScreenGui
+
+    local speedDownButton = Instance.new("TextButton")
+    speedDownButton.Size = UDim2.new(0, 50, 0, 50)
+    speedDownButton.Position = UDim2.new(0.5, -110, 0.8, -170)
+    speedDownButton.BackgroundColor3 = buttonColor
+    speedDownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    speedDownButton.Text = "-"
+    speedDownButton.Font = Enum.Font.SourceSansBold
+    speedDownButton.TextSize = 14
+    speedDownButton.Parent = ScreenGui
+
+    -- Menambahkan label nama pembuat
+    local creatorLabel = Instance.new("TextLabel")
+    creatorLabel.Size = UDim2.new(0, 200, 0, 50)
+    creatorLabel.Position = UDim2.new(0.5, -100, 0.95, -25) -- Posisi di bawah
+    creatorLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    creatorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    creatorLabel.Text = "Dibuat oleh CODEX_0xH4x0r"
+    creatorLabel.Font = Enum.Font.SourceSansBold
+    creatorLabel.TextSize = 14
+    creatorLabel.Parent = ScreenGui
+
+    -- Menambahkan logo (misal, gambar Roblox)
+    local logoImage = Instance.new("ImageLabel")
+    logoImage.Size = UDim2.new(0, 50, 0, 50)
+    logoImage.Position = UDim2.new(0.5, 110, 0.95, -25) -- Posisi di bawah
+    logoImage.BackgroundTransparency = 1
+    logoImage.Image = "rbxassetid://17693352133" -- Ganti dengan asset ID logo Anda
+    logoImage.Parent = ScreenGui
+
+    return {
+        forwardButton = forwardButton,
+        backwardButton = backwardButton,
+        leftButton = leftButton,
+        rightButton = rightButton,
+        speedLabel = speedLabel,
+        speedUpButton = speedUpButton,
+        speedDownButton = speedDownButton,
+    }
+end
+
+-- Fungsi untuk mengaktifkan atau menonaktifkan kontrol kursi
+local function toggleSeatControl(seat, controlEnabled)
+    if seat and seat:IsA("Seat") then
+        -- Tampilkan atau sembunyikan GUI kursi
+        local player = game.Players.LocalPlayer
+        if player.PlayerGui:FindFirstChild("ControlGui") then
+            player.PlayerGui.ControlGui.Enabled = controlEnabled
+        else
+            if controlEnabled then
+                createControlGUI()
+            end
+        end
+    end
+end
+
+-- Fungsi yang dipanggil saat pemain duduk atau berdiri dari kursi
+local function onPlayerSitChanged(seat, sitting)
+    if sitting then
+        -- Pemain duduk di kursi, aktifkan kontrol kursi
+        toggleSeatControl(seat, true)
+    else
+        -- Pemain berdiri dari kursi, nonaktifkan kontrol kursi
+        toggleSeatControl(seat, false)
+    end
+end
+
+local speed = 1
+
+-- Fungsi untuk menggerakkan kursi berdasarkan input
+local function moveSeat(seat, direction)
+    if direction == "Forward" then
+        seat.CFrame = seat.CFrame * CFrame.new(0, 0, -1 * speed)
+    elseif direction == "Backward" then
+        seat.CFrame = seat.CFrame * CFrame.new(0, 0, 1 * speed)
+    elseif direction == "Left" then
+        seat.CFrame = seat.CFrame * CFrame.Angles(0, math.rad(-10 * speed), 0)
+    elseif direction == "Right" then
+        seat.CFrame = seat.CFrame * CFrame.Angles(0, math.rad(10 * speed), 0)
+    end
+end
+
+-- Fungsi yang dipanggil saat tombol ditekan
+local function onButtonPressed(input)
+    -- Periksa apakah pemain sedang duduk di kursi
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
+        local seat = character.Humanoid.SeatPart
+        -- Jika tombol "W" ditekan, pindahkan kursi ke depan
+        if input.KeyCode == Enum.KeyCode.W then
+            moveSeat(seat, "Forward")
+        -- Jika tombol "S" ditekan, pindahkan kursi ke belakang
+        elseif input.KeyCode == Enum.KeyCode.S then
+            moveSeat(seat, "Backward")
+        -- Jika tombol "A" ditekan, putar kursi ke kiri
+        elseif input.KeyCode == Enum.KeyCode.A then
+            moveSeat(seat, "Left")
+        -- Jika tombol "D" ditekan, putar kursi ke kanan
+        elseif input.KeyCode == Enum.KeyCode.D then
+            moveSeat(seat, "Right")
+        end
+    end
+end
+
+-- Mengaitkan fungsi ke pemain saat duduk atau berdiri
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.Seated:Connect(function(seat, sitting)
+        onPlayerSitChanged(seat, sitting)
+    end)
+end)
+
+-- Mengaitkan fungsi ke tombol yang ditekan
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.UserInputType == Enum.UserInputType.Keyboard then
+        onButtonPressed(input)
+    end
+end)
+
+-- Inisialisasi GUI kontrol
+local controls = createControlGUI()
+
+-- Mengaitkan fungsi ke tombol GUI
+controls.forwardButton.MouseButton1Down:Connect(function()
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
+        moveSeat(character.Humanoid.SeatPart, "Forward")
+    end
+end)
+
+controls.backwardButton.MouseButton1Down:Connect(function()
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
+        moveSeat(character.Humanoid.SeatPart, "Backward")
+    end
+end)
+
+controls.leftButton.MouseButton1Down:Connect(function()
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
+        moveSeat(character.Humanoid.SeatPart, "Left")
+    end
+end)
+
+controls.rightButton.MouseButton1Down:Connect(function()
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") and character.Humanoid.SeatPart then
+        moveSeat(character.Humanoid.SeatPart, "Right")
+    end
+end)
+
+controls.speedUpButton.MouseButton1Down:Connect(function()
+    speed = speed + 1
+    controls.speedLabel.Text = "Speed: " .. speed
+end)
+
+controls.speedDownButton.MouseButton1Down:Connect(function()
+    if speed > 1 then
+        speed = speed - 1
+        controls.speedLabel.Text = "Speed: " .. speed
+    end
+end)
